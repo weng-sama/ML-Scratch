@@ -16,7 +16,11 @@ const $ = (sel) => document.querySelector(sel);
 function toast(msg) {
   const el = Object.assign(document.createElement('div'), { className: 'toast', textContent: msg });
   $('#toasts').append(el);
-  setTimeout(() => el.remove(), 5000);
+  setTimeout(() => {
+    el.classList.add('leaving');
+    el.addEventListener('transitionend', () => el.remove(), { once: true });
+    setTimeout(() => el.remove(), 300); // 減少動態效果時不會觸發 transitionend
+  }, 5000);
 }
 
 function switchTab(name) {
