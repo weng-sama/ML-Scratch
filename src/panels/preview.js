@@ -2,6 +2,7 @@
 import { attach } from '../camera.js';
 import { t } from '../i18n/index.js';
 import { icon } from '../icons.js';
+import { tokens } from '../tokens/tokens.js';
 
 export function createPreview(root, { onText }) {
   root.innerHTML = `
@@ -53,16 +54,16 @@ export function createPreview(root, { onText }) {
     const ctx = overlay.getContext('2d');
     ctx.clearRect(0, 0, w, h);
     ctx.lineWidth = 3;
-    ctx.font = 'bold 14px sans-serif';
+    ctx.font = `bold 14px ${tokens.font.family}`;
     for (const b of boxes) {
       const x = b.x1 * w;
       const y = b.y1 * h;
-      ctx.strokeStyle = '#be123c';
+      ctx.strokeStyle = tokens.color.detection;
       ctx.strokeRect(x, y, (b.x2 - b.x1) * w, (b.y2 - b.y1) * h);
       const label = `${b.label} ${Math.round(b.conf * 100)}%`;
-      ctx.fillStyle = '#be123c';
+      ctx.fillStyle = tokens.color.detection;
       ctx.fillRect(x, y - 20, ctx.measureText(label).width + 10, 20);
-      ctx.fillStyle = '#fff';
+      ctx.fillStyle = tokens.color.textInverse;
       ctx.fillText(label, x + 5, y - 5);
     }
   }

@@ -3,6 +3,7 @@ import { api } from '../api.js';
 import { attach, ensureCamera, grabFrame } from '../camera.js';
 import { t } from '../i18n/index.js';
 import { iconButton } from '../icons.js';
+import { categoryColors as BOX_COLORS, tokens } from '../tokens/tokens.js';
 
 const h = (tag, props = {}, ...children) => {
   const el = Object.assign(document.createElement(tag), props);
@@ -10,7 +11,6 @@ const h = (tag, props = {}, ...children) => {
   return el;
 };
 
-const BOX_COLORS = ['#be123c', '#2563eb', '#b45309', '#15803d', '#7c3aed', '#c2410c', '#0f766e', '#0369a1', '#a21caf'];
 
 // 刪除需要確認，避免誤觸
 const confirmDelete = () => confirm(t('annotate.confirmDelete'));
@@ -207,7 +207,7 @@ export function createAnnotator(root, { notify }) {
       const ctx = canvas.getContext('2d');
       ctx.drawImage(img, 0, 0, w, hh);
       ctx.lineWidth = 2;
-      ctx.font = 'bold 13px sans-serif';
+      ctx.font = `bold 13px ${tokens.font.family}`;
       detect.boxes.forEach((b, i) => {
         const color = BOX_COLORS[b.cls % BOX_COLORS.length];
         ctx.strokeStyle = color;

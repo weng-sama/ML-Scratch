@@ -2,11 +2,14 @@
 import { Chart, registerables } from 'chart.js';
 import { t } from '../i18n/index.js';
 import { iconButton } from '../icons.js';
+import { categoryColors as PALETTE, tokens } from '../tokens/tokens.js';
 
 Chart.register(...registerables);
 
 // 曲線另以虛線區分訓練／驗證，不只靠顏色
-const PALETTE = ['#2563eb', '#c2410c', '#7c3aed', '#15803d', '#be123c', '#0f766e'];
+Chart.defaults.color = tokens.color.textMuted;
+Chart.defaults.borderColor = tokens.color.surfaceSunken;
+Chart.defaults.font.family = tokens.font.family;
 
 function lineChart(canvas, title, yMax) {
   return new Chart(canvas, {

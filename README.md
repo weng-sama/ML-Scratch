@@ -1,6 +1,6 @@
 # ML-Scratch
 
-版本：v1.1.1
+版本：v2.0.0
 
 用 **節點拉線** 組合資料流、用 **Scratch 積木** 寫邏輯，讓初學者不寫程式也能體驗機器學習的完整流程：收集資料 → 標註 → 遷移學習訓練 → 即時推論 → 用結果驅動程式。
 
@@ -45,11 +45,30 @@
 ```
 electron/   Electron 主程序：啟動 Python 後端（隨機埠＋隨機權杖，只聽 127.0.0.1）、以 app:// 提供前端
 src/        前端（Vite）：Drawflow 節點編輯器、Blockly 積木、Chart.js 曲線、標註工具
+  tokens/   由 design/tokens.json 自動產生的 tokens.css 與 tokens.js（勿手改）
+design/     設計權杖唯一來源 tokens.json（primitive → semantic → component 三層）
   i18n/     語系檔（目前 zh-TW；新增語言時複製 zh-TW.js 翻譯即可）
 backend/    FastAPI 後端：資料集、訓練工作（WebSocket 推送進度）、推論、LLM
 ```
 
 資料（資料集、模型、權重、LLM）存在 `%APPDATA%\ml-scratch\workspace`。
+
+## 設計權杖
+
+所有顏色、間距、圓角、字級、動態時間都定義在 `design/tokens.json`，分三層：
+
+| 層級 | 例子 | 何時修改 |
+| --- | --- | --- |
+| primitive | `color.blue.600`、`space.2`、`radius.lg` | 幾乎不改，是原始數值 |
+| semantic | `color.primary`、`color.node.train`、`color.block.events`、`color.category.1–9` | 換主題或調整用途時 |
+| component | `button.pressScale`、`node.titleRadius`、`port.hitSize` | 只調整單一元件時 |
+
+`npm run tokens`（`npm run build` 也會自動執行）產生：
+
+- `src/tokens/tokens.css`：CSS 變數，保留層級引用（例：`--color-primary: var(--color-blue-600)`）
+- `src/tokens/tokens.js`：已解析的實際值，給無法讀 CSS 變數的 Blockly、Chart.js 與 Canvas 使用
+
+元件樣式與 JS 一律引用權杖，不寫死色碼或尺寸。
 
 ## 開發
 
@@ -71,6 +90,7 @@ ML_SCRATCH_SLOW=1 python -m pytest   # 另跑 YOLO 偵測／分類的實際訓�
 
 ## 版本紀錄
 
+- **v2.0.0**：樣式系統重構為三層設計權杖（`design/tokens.json` → CSS 變數＋JS 常數）；CSS 與 JS 中寫死的 64 個色碼、62 個像素值全部改為權杖引用。外觀不變，唯一可見差異：標註框類別色改與訓練曲線共用同一組類別色序列。
 - **v1.1.1**：介面細節打磨。按鈕改用陰影外框並加入按下縮放回饋；節點標題列同心圓角；連線圓點點擊範圍擴大至 34px、懸停改為光暈；刪除鈕點擊範圍擴大；變動數字改用等寬數字；提示訊息加入淡入／淡出；圖示線寬配合文字粗細；縮圖加細外框；字體平滑與標題換行平衡。
 - **v1.1.0**：介面可近用性改善。節點、積木與按鈕配色的白字對比提升至 WCAG AA（≥ 4.5:1）；圖示改用 SVG（取代 emoji）；加入鍵盤焦點框、分頁方向鍵切換、節點清單可用鍵盤加入；刪除資料前需確認；連拍時即時顯示張數；訓練面板新增「停止訓練」；執行中停用節點按鈕；支援「減少動態效果」設定。
 - **v1.0.0**：初版骨架。

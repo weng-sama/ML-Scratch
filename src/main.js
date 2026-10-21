@@ -192,7 +192,7 @@ async function boot() {
     const item = Object.assign(document.createElement('button'), {
       type: 'button', className: 'palette-item', draggable: true, textContent: t(`node.${type}.title`),
     });
-    item.style.setProperty('--node-color', graph.NODE_TYPES[type].color);
+    item.style.setProperty('--node-color', graph.nodeColor(type));
     item.addEventListener('dragstart', (e) => e.dataTransfer.setData('node-type', type));
     item.addEventListener('click', () => {
       const r = $('#graph').getBoundingClientRect();

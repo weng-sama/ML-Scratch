@@ -4,17 +4,19 @@ import 'drawflow/dist/drawflow.min.css';
 import { t } from './i18n/index.js';
 import { icon } from './icons.js';
 
-// 每種節點：輸入埠可接受的型別、輸出型別、顏色
+// 每種節點：輸入埠可接受的型別、輸出型別
 export const NODE_TYPES = {
-  // 顏色與白字對比皆 ≥ 4.5:1（WCAG AA）
-  dataset: { inputs: [], output: 'dataset', color: '#2563eb' },
-  pretrained: { inputs: [], output: 'model', color: '#7c3aed' },
-  train: { inputs: [['dataset'], ['model']], output: 'model', color: '#c2410c' },
-  camera: { inputs: [], output: 'image', color: '#15803d' },
-  textin: { inputs: [], output: 'text', color: '#0e7490' },
-  predict: { inputs: [['model'], ['image', 'text']], output: null, color: '#be123c' },
-  llm: { inputs: [['text']], output: null, color: '#0f766e' },
+  dataset: { inputs: [], output: 'dataset' },
+  pretrained: { inputs: [], output: 'model' },
+  train: { inputs: [['dataset'], ['model']], output: 'model' },
+  camera: { inputs: [], output: 'image' },
+  textin: { inputs: [], output: 'text' },
+  predict: { inputs: [['model'], ['image', 'text']], output: null },
+  llm: { inputs: [['text']], output: null },
 };
+
+// 節點色來自設計權杖 --color-node-<種類>
+export const nodeColor = (type) => `var(--color-node-${type})`;
 
 const INPUT_LABELS = {
   train: ['port.dataset', 'port.model'],
@@ -82,7 +84,7 @@ function decorate(id) {
   const el = document.getElementById(`node-${id}`);
   const node = getNode(id);
   if (!el || !node) return;
-  el.style.setProperty('--node-color', NODE_TYPES[node.name]?.color || '#888');
+  el.style.setProperty('--node-color', nodeColor(node.name));
   (INPUT_LABELS[node.name] || []).forEach((key, i) => {
     el.querySelector(`.inputs .input_${i + 1}`)?.setAttribute('data-label', t(key));
   });

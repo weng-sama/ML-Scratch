@@ -1,0 +1,182 @@
+/* 此檔由 scripts/build-tokens.mjs 自動產生，請修改 design/tokens.json 後執行 npm run tokens */
+:root {
+  /* ===== primitive ===== */
+  --color-gray-25: #fbfbfd;
+  --color-gray-50: #f4f5f9;
+  --color-gray-100: #eef0f5;
+  --color-gray-150: #e3e6ee;
+  --color-gray-200: #d5dae4;
+  --color-gray-300: #c7cbe0;
+  --color-gray-400: #7a8296;
+  --color-gray-500: #5b6475;
+  --color-gray-900: #1f2430;
+  --color-white: #ffffff;
+  --color-blue-100: #dbeafe;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-violet-600: #7c3aed;
+  --color-violet-700: #6d28d9;
+  --color-orange-700: #c2410c;
+  --color-green-100: #d1fae5;
+  --color-green-400: #4ade80;
+  --color-green-700: #15803d;
+  --color-green-800: #166534;
+  --color-cyan-700: #0e7490;
+  --color-rose-700: #be123c;
+  --color-teal-700: #0f766e;
+  --color-red-100: #fee2e2;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-800: #991b1b;
+  --color-amber-100: #fef3c7;
+  --color-amber-700: #b45309;
+  --color-indigo-700: #4338ca;
+  --color-fuchsia-700: #a21caf;
+  --color-sky-700: #0369a1;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-0-5: 2px;
+  --space-1-5: 6px;
+  --space-2-5: 10px;
+  --space-3-5: 14px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-pill: 10px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+  --font-size-xs: 12px;
+  --font-size-sm: 13px;
+  --font-size-base: 14px;
+  --font-size-md: 15px;
+  --font-size-lg: 18px;
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-family-sans: "Noto Sans TC", "Microsoft JhengHei", "PingFang TC", system-ui, sans-serif;
+  --duration-fast: 150ms;
+  --duration-normal: 200ms;
+  --easing-out: ease-out;
+  --shadow-border: 0 0 0 1px oklch(0 0 0 / 0.08), 0 1px 2px -1px oklch(0 0 0 / 0.08), 0 2px 4px 0 oklch(0 0 0 / 0.04); /* 以陰影表現深度的外框 */
+  --shadow-border-hover: 0 0 0 1px oklch(0 0 0 / 0.12), 0 1px 2px -1px oklch(0 0 0 / 0.1), 0 2px 4px 0 oklch(0 0 0 / 0.06);
+  --shadow-sm: 0 1px 3px oklch(0 0 0 / 0.1);
+  --shadow-lg: 0 4px 12px oklch(0 0 0 / 0.2);
+  /* ===== semantic ===== */
+  --color-bg: var(--color-gray-50); /* App 背景 */
+  --color-surface: var(--color-white); /* 面板、節點、按鈕底色 */
+  --color-surface-muted: var(--color-gray-100); /* 標籤、工具箱背景 */
+  --color-surface-sunken: var(--color-gray-150); /* 積木飛出區、格線 */
+  --color-border: var(--color-gray-200); /* 結構分隔線與輸入框外框 */
+  --color-text: var(--color-gray-900);
+  --color-text-muted: var(--color-gray-500); /* 次要文字；在 bg 上對比 5.5:1 */
+  --color-text-inverse: var(--color-white);
+  --color-brand: var(--color-violet-700); /* 頂端列與目前分頁指示 */
+  --color-primary: var(--color-blue-600);
+  --color-primary-hover: var(--color-blue-700);
+  --color-on-primary: var(--color-white);
+  --color-success: var(--color-green-700);
+  --color-success-hover: var(--color-green-800);
+  --color-warning: var(--color-amber-700);
+  --color-danger: var(--color-red-600);
+  --color-danger-hover: var(--color-red-700);
+  --color-ring: var(--color-blue-600); /* 鍵盤焦點框 */
+  --color-stage: var(--color-gray-900); /* 攝影機舞台與紀錄區底色 */
+  --color-stage-text: var(--color-gray-300);
+  --color-canvas: var(--color-gray-25); /* 節點畫布 */
+  --color-canvas-dot: var(--color-gray-200);
+  --color-wire: var(--color-gray-400); /* 節點連線 */
+  --color-running: var(--color-green-400); /* 執行中指示線 */
+  --color-detection: var(--color-rose-700); /* 預覽畫面上的偵測框 */
+  --color-image-outline: oklch(0 0 0 / 0.1); /* 圖片外框：純黑 10% */
+  --color-on-brand-subtle: rgb(255 255 255 / 0.14);
+  --color-on-brand-hover: rgb(255 255 255 / 0.26);
+  --color-on-brand-divider: rgb(255 255 255 / 0.35);
+  --color-port-label-bg: rgb(251 251 253 / 0.92);
+  --color-bubble-say: var(--color-amber-100);
+  --color-bubble-user: var(--color-blue-100);
+  --color-bubble-assistant: var(--color-green-100);
+  --color-bubble-error: var(--color-red-100);
+  --color-bubble-error-text: var(--color-red-800);
+  --color-node-dataset: var(--color-blue-600);
+  --color-node-pretrained: var(--color-violet-600);
+  --color-node-train: var(--color-orange-700);
+  --color-node-camera: var(--color-green-700);
+  --color-node-textin: var(--color-cyan-700);
+  --color-node-predict: var(--color-rose-700);
+  --color-node-llm: var(--color-teal-700);
+  --color-block-events: var(--color-amber-700);
+  --color-block-ai: var(--color-rose-700);
+  --color-block-actions: var(--color-violet-600);
+  --color-block-logic: var(--color-indigo-700);
+  --color-block-loop: var(--color-green-700);
+  --color-block-math: var(--color-blue-700);
+  --color-block-text: var(--color-teal-700);
+  --color-block-variable: var(--color-fuchsia-700);
+  --color-category-1: var(--color-blue-600);
+  --color-category-2: var(--color-orange-700);
+  --color-category-3: var(--color-violet-600);
+  --color-category-4: var(--color-green-700);
+  --color-category-5: var(--color-rose-700);
+  --color-category-6: var(--color-teal-700);
+  --color-category-7: var(--color-amber-700);
+  --color-category-8: var(--color-sky-700);
+  --color-category-9: var(--color-fuchsia-700);
+  --motion-fast: var(--duration-fast) var(--easing-out); /* 互動狀態轉換 */
+  --motion-normal: var(--duration-normal) var(--easing-out);
+  --font-family: var(--font-family-sans); /* 介面字型；Chart.js 與 Canvas 文字也使用 */
+  /* ===== component ===== */
+  --control-height: 32px; /* 按鈕與輸入框高度 */
+  --control-radius: var(--radius-md);
+  --control-font-size: var(--font-size-sm);
+  --control-padding-x: var(--space-3);
+  --control-gap: var(--space-1-5);
+  --button-bg: var(--color-surface);
+  --button-fg: var(--color-text);
+  --button-shadow: var(--shadow-border);
+  --button-shadow-hover: var(--shadow-border-hover);
+  --button-press-scale: 0.96; /* 按下回饋，不可小於 0.95 */
+  --button-disabled-opacity: 0.55;
+  --button-icon-padding-left: var(--space-2-5); /* 光學對齊：圖示側比文字側少 2px */
+  --icon-stroke: 1.5; /* 一般文字旁 */
+  --icon-stroke-strong: 2; /* 粗體文字旁 */
+  --topbar-height: 52px;
+  --topbar-bg: var(--color-brand);
+  --topbar-fg: var(--color-text-inverse);
+  --layout-palette-width: 156px;
+  --layout-side-width: 440px;
+  --palette-item-height: 36px;
+  --node-width: 224px;
+  --node-border-width: 2px;
+  --node-radius: var(--radius-lg);
+  --node-title-radius: calc(var(--node-radius) - var(--node-border-width)); /* 同心圓角：外框圓角 − 邊框 */
+  --node-label-width: 64px;
+  --node-shadow: var(--shadow-sm);
+  --node-selected-ring: 3px;
+  --port-size: 18px;
+  --port-hit-size: 34px; /* 點擊範圍；兩埠中心距 36px，不可重疊 */
+  --port-gap: 18px;
+  --port-halo: 4px;
+  --port-label-offset: 22px;
+  --wire-width: 4px;
+  --tab-height: 44px; /* 觸控最小點擊高度 */
+  --tab-indicator: 3px;
+  --thumb-width: 56px;
+  --thumb-height: 42px;
+  --thumb-radius: var(--radius-sm);
+  --thumb-delete-size: 22px;
+  --thumb-delete-hit-inset: -7px; /* 刪除鈕點擊範圍擴大到 36px */
+  --card-radius: var(--radius-xl); /* 同心圓角：縮圖 4px + 內距 8px */
+  --card-padding: var(--space-2);
+  --strip-radius: calc(var(--thumb-radius) + var(--node-border-width));
+  --toast-bg: var(--color-text);
+  --toast-fg: var(--color-text-inverse);
+  --toast-shadow: var(--shadow-lg);
+  --chart-height: 200px;
+  --log-max-height: 180px;
+  --log-min-height: 120px;
+  --focus-width: 2px;
+  --focus-offset: 2px;
+}
