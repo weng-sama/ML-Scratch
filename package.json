@@ -1,6 +1,6 @@
 {
   "name": "ml-scratch",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "private": true,
   "description": "用積木與節點拉線學機器學習：YOLO 物件偵測、圖片分類、文字分類、本機 LLM 對話",
   "license": "AGPL-3.0-or-later",
@@ -8,7 +8,8 @@
   "main": "electron/main.cjs",
   "scripts": {
     "tokens": "node scripts/build-tokens.mjs",
-    "build": "node scripts/build-tokens.mjs && vite build",
+    "icons": "node scripts/build-icons.mjs",
+    "build": "node scripts/build-tokens.mjs && node scripts/build-icons.mjs && vite build",
     "dev": "vite",
     "start": "npm run build && electron ."
   },
@@ -18,6 +19,7 @@
     "drawflow": "0.0.60"
   },
   "devDependencies": {
+    "@iconify-json/lucide": "1.2.140",
     "electron": "44.5.1",
     "vite": "8.3.3"
   }

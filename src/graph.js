@@ -15,8 +15,9 @@ export const NODE_TYPES = {
   llm: { inputs: [['text']], output: null },
 };
 
-// 節點色來自設計權杖 --color-node-<種類>
+// 節點色來自設計權杖 --color-node-<種類>；圖示見 scripts/build-icons.mjs 的 node* 項目
 export const nodeColor = (type) => `var(--color-node-${type})`;
+export const nodeIcon = (type) => `node${type[0].toUpperCase()}${type.slice(1)}`;
 
 const INPUT_LABELS = {
   train: ['port.dataset', 'port.model'],
@@ -33,7 +34,7 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
 const opt = (value, label) => `<option value="${esc(value)}">${esc(label)}</option>`;
 
 function nodeHtml(type) {
-  const head = `<div class="node-title"><input class="title-input" aria-label="${t('node.rename')}" df-title></div>`;
+  const head = `<div class="node-title">${icon(nodeIcon(type))}<input class="title-input" aria-label="${t('node.rename')}" df-title></div>`;
   const row = (label, field) => `<label class="node-row"><span>${label}</span>${field}</label>`;
   switch (type) {
     case 'dataset':
@@ -196,6 +197,10 @@ export function setStatus(id, text, state = '') {
 export function exportGraph() { return editor.export(); }
 
 export function importGraph(data) {
+  // 以目前版本的節點樣板重建 HTML（舊專案也會拿到新圖示與選項），欄位值仍由 data 套用
+  for (const node of Object.values(data.drawflow?.Home?.data || {})) {
+    if (NODE_TYPES[node.name]) node.html = nodeHtml(node.name);
+  }
   editor.import(data);
   allNodes().forEach((n) => decorate(n.id));
 }

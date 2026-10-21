@@ -31,7 +31,7 @@ button:hover:not(:disabled) { box-shadow: var(--button-shadow-hover); color: var
 button:active:not(:disabled):not(.tab):not(.link):not(.strip-item) { scale: var(--button-press-scale); }
 button:has(> .icon:first-child):has(> span) { padding-left: var(--button-icon-padding-left); }
 .icon { flex-shrink: 0; stroke-width: var(--icon-stroke); }
-button.primary .icon, .topbar .go .icon, .palette-item .icon { stroke-width: var(--icon-stroke-strong); }
+button.primary .icon, .topbar .go .icon, .palette-item .icon, .node-title .icon, .tab.active .icon { stroke-width: var(--icon-stroke-strong); }
 button:disabled { opacity: var(--button-disabled-opacity); cursor: not-allowed; }
 button.primary { background: var(--color-primary); box-shadow: none; color: var(--color-on-primary); }
 button.primary:hover:not(:disabled) { background: var(--color-primary-hover); color: var(--color-on-primary); }
@@ -106,11 +106,14 @@ body.running .topbar { box-shadow: inset 0 calc(-1 * var(--tab-indicator)) 0 var
 #graph .drawflow .drawflow-node.selected { background: var(--color-surface); box-shadow: 0 0 0 var(--node-selected-ring) var(--node-color); }
 #graph .drawflow-node .drawflow_content_node { padding: 0 var(--space-2-5) var(--space-2-5); }
 .node-title {
+  display: flex; align-items: center; gap: var(--space-1-5); color: var(--color-text-inverse);
   margin: 0 calc(-1 * var(--space-2-5)) var(--space-2); padding: var(--space-1-5) var(--space-2-5);
   background: var(--node-color); border-radius: var(--node-title-radius) var(--node-title-radius) 0 0;
 }
+/* Drawflow 對畫布內所有 svg 設了 position: absolute（給連線用），圖示要還原 */
+#graph .drawflow .icon { position: static; overflow: hidden !important; }
 .node-title .title-input {
-  width: 100%; min-height: var(--space-6); border: none; background: transparent; color: var(--color-text-inverse);
+  flex: 1; min-width: 0; min-height: var(--space-6); border: none; background: transparent; color: var(--color-text-inverse);
   font-weight: var(--font-weight-bold); padding: 0 var(--space-0-5);
 }
 .node-title .title-input:focus-visible { outline-color: var(--color-text-inverse); outline-offset: 0; }

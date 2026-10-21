@@ -190,7 +190,8 @@ async function boot() {
   for (const type of Object.keys(graph.NODE_TYPES)) {
     // 用 button：鍵盤可聚焦並以 Enter／空白鍵加入節點（拖曳的替代方式）
     const item = Object.assign(document.createElement('button'), {
-      type: 'button', className: 'palette-item', draggable: true, textContent: t(`node.${type}.title`),
+      type: 'button', className: 'palette-item', draggable: true,
+      innerHTML: `${icon(graph.nodeIcon(type))}<span>${t(`node.${type}.title`)}</span>`,
     });
     item.style.setProperty('--node-color', graph.nodeColor(type));
     item.addEventListener('dragstart', (e) => e.dataTransfer.setData('node-type', type));
