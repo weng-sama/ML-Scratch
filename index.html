@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 'unsafe-eval'：積木轉成的 JavaScript 需要動態執行 -->
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: http://127.0.0.1:*; media-src 'self' blob: mediastream:; connect-src http://127.0.0.1:* ws://127.0.0.1:*">
+  <title>ML-Scratch</title>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">ML-Scratch</div>
+    <button id="btn-start" class="go" data-i18n="app.start"></button>
+    <button id="btn-stop" class="stop" data-i18n="app.stop"></button>
+    <span class="sep"></span>
+    <button id="btn-new" data-i18n="app.newProject"></button>
+    <button id="btn-open" data-i18n="app.open"></button>
+    <button id="btn-save" data-i18n="app.save"></button>
+    <span id="status" class="status"></span>
+  </header>
+  <main class="layout">
+    <aside class="palette">
+      <h3 data-i18n="palette.title"></h3>
+      <div id="palette-items"></div>
+      <p class="muted" data-i18n="palette.hint"></p>
+    </aside>
+    <section class="editors">
+      <div class="pane">
+        <div class="pane-title" data-i18n="app.graph"></div>
+        <div id="graph"></div>
+      </div>
+      <div class="pane">
+        <div class="pane-title" data-i18n="app.blocks"></div>
+        <div id="blockly"></div>
+      </div>
+    </section>
+    <aside class="side">
+      <nav class="tabs">
+        <button class="tab active" data-tab="preview" data-i18n="tabs.preview"></button>
+        <button class="tab" data-tab="train" data-i18n="tabs.train"></button>
+        <button class="tab" data-tab="annotate" data-i18n="tabs.annotate"></button>
+      </nav>
+      <div class="tab-page" data-tab="preview"></div>
+      <div class="tab-page" data-tab="train" hidden></div>
+      <div class="tab-page" data-tab="annotate" hidden></div>
+    </aside>
+  </main>
+  <div id="toasts"></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

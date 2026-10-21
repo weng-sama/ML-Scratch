@@ -1,0 +1,8 @@
+# PyTorch 由 start.bat 另外安裝（偵測到 NVIDIA GPU 時安裝 CUDA 版本）
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+ultralytics>=8.3.0,<9
+sentence-transformers>=3.0,<6
+pillow>=10
+numpy>=1.26
+requests>=2.31
