@@ -1,6 +1,7 @@
 import './styles.css';
 import { api, connect, watchJob } from './api.js';
 import { t } from './i18n/index.js';
+import { icon } from './icons.js';
 import * as graph from './graph.js';
 import { clearBlocks, initBlocks, loadBlocks, saveBlocks } from './blocks.js';
 import { Runtime } from './runtime.js';
@@ -19,7 +20,12 @@ function toast(msg) {
 }
 
 function switchTab(name) {
-  document.querySelectorAll('.tab').forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tab').forEach((b) => {
+    const on = b.dataset.tab === name;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', String(on));
+    b.tabIndex = on ? 0 : -1;
+  });
   document.querySelectorAll('.tab-page').forEach((p) => { p.hidden = p.dataset.tab !== name; });
 }
 
@@ -147,7 +153,9 @@ async function boot() {
   initBlocks($('#blockly'));
 
   const preview = createPreview($('[data-tab="preview"].tab-page'), { onText: (text) => runtime.userText(text) });
-  const trainPanel = createTrainPanel($('[data-tab="train"].tab-page'));
+  const trainPanel = createTrainPanel($('[data-tab="train"].tab-page'), {
+    onCancel: (jobId) => api.cancelJob(jobId).catch((err) => toast(err.message)),
+  });
   const annotator = createAnnotator($('[data-tab="annotate"].tab-page'), { notify: toast });
   const runtime = new Runtime({
     ...preview,
@@ -176,8 +184,9 @@ async function boot() {
 
   // 節點清單：拖曳或點擊加入
   for (const type of Object.keys(graph.NODE_TYPES)) {
-    const item = Object.assign(document.createElement('div'), {
-      className: 'palette-item', draggable: true, textContent: t(`node.${type}.title`),
+    // 用 button：鍵盤可聚焦並以 Enter／空白鍵加入節點（拖曳的替代方式）
+    const item = Object.assign(document.createElement('button'), {
+      type: 'button', className: 'palette-item', draggable: true, textContent: t(`node.${type}.title`),
     });
     item.style.setProperty('--node-color', graph.NODE_TYPES[type].color);
     item.addEventListener('dragstart', (e) => e.dataTransfer.setData('node-type', type));
@@ -188,7 +197,18 @@ async function boot() {
     $('#palette-items').append(item);
   }
 
-  document.querySelectorAll('.tab').forEach((b) => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+  const tabs = [...document.querySelectorAll('.tab')];
+  tabs.forEach((b, i) => {
+    b.addEventListener('click', () => switchTab(b.dataset.tab));
+    // 分頁列支援左右方向鍵切換（WAI-ARIA tabs 模式）
+    b.addEventListener('keydown', (e) => {
+      const d = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
+      if (!d) return;
+      const next = tabs[(i + d + tabs.length) % tabs.length];
+      switchTab(next.dataset.tab);
+      next.focus();
+    });
+  });
   $('#btn-start').addEventListener('click', () => { preview.reset(); switchTab('preview'); runtime.start(); });
   $('#btn-stop').addEventListener('click', () => runtime.stop());
   $('#btn-new').addEventListener('click', () => {
@@ -218,6 +238,7 @@ async function boot() {
 
 function applyStaticText() {
   document.title = t('app.title');
+  document.querySelectorAll('[data-icon]').forEach((el) => el.insertAdjacentHTML('afterbegin', icon(el.dataset.icon)));
   document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
 }
 

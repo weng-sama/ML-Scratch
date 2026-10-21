@@ -11,42 +11,42 @@
 <body>
   <header class="topbar">
     <div class="brand">ML-Scratch</div>
-    <button id="btn-start" class="go" data-i18n="app.start"></button>
-    <button id="btn-stop" class="stop" data-i18n="app.stop"></button>
-    <span class="sep"></span>
-    <button id="btn-new" data-i18n="app.newProject"></button>
-    <button id="btn-open" data-i18n="app.open"></button>
-    <button id="btn-save" data-i18n="app.save"></button>
-    <span id="status" class="status"></span>
+    <button id="btn-start" class="go" data-icon="play"><span data-i18n="app.start"></span></button>
+    <button id="btn-stop" class="stop" data-icon="stop"><span data-i18n="app.stop"></span></button>
+    <span class="sep" aria-hidden="true"></span>
+    <button id="btn-new" data-icon="filePlus"><span data-i18n="app.newProject"></span></button>
+    <button id="btn-open" data-icon="folderOpen"><span data-i18n="app.open"></span></button>
+    <button id="btn-save" data-icon="save"><span data-i18n="app.save"></span></button>
+    <span id="status" class="status" role="status"></span>
   </header>
   <main class="layout">
     <aside class="palette">
-      <h3 data-i18n="palette.title"></h3>
-      <div id="palette-items"></div>
+      <h3 id="palette-title" data-i18n="palette.title"></h3>
+      <div id="palette-items" role="group" aria-labelledby="palette-title"></div>
       <p class="muted" data-i18n="palette.hint"></p>
     </aside>
     <section class="editors">
       <div class="pane">
-        <div class="pane-title" data-i18n="app.graph"></div>
+        <h2 class="pane-title" data-i18n="app.graph"></h2>
         <div id="graph"></div>
       </div>
       <div class="pane">
-        <div class="pane-title" data-i18n="app.blocks"></div>
+        <h2 class="pane-title" data-i18n="app.blocks"></h2>
         <div id="blockly"></div>
       </div>
     </section>
     <aside class="side">
-      <nav class="tabs">
-        <button class="tab active" data-tab="preview" data-i18n="tabs.preview"></button>
-        <button class="tab" data-tab="train" data-i18n="tabs.train"></button>
-        <button class="tab" data-tab="annotate" data-i18n="tabs.annotate"></button>
-      </nav>
-      <div class="tab-page" data-tab="preview"></div>
-      <div class="tab-page" data-tab="train" hidden></div>
-      <div class="tab-page" data-tab="annotate" hidden></div>
+      <div class="tabs" role="tablist">
+        <button class="tab active" role="tab" id="tab-preview" aria-controls="page-preview" aria-selected="true" data-tab="preview" data-i18n="tabs.preview"></button>
+        <button class="tab" role="tab" id="tab-train" aria-controls="page-train" aria-selected="false" tabindex="-1" data-tab="train" data-i18n="tabs.train"></button>
+        <button class="tab" role="tab" id="tab-annotate" aria-controls="page-annotate" aria-selected="false" tabindex="-1" data-tab="annotate" data-i18n="tabs.annotate"></button>
+      </div>
+      <div class="tab-page" role="tabpanel" id="page-preview" aria-labelledby="tab-preview" data-tab="preview"></div>
+      <div class="tab-page" role="tabpanel" id="page-train" aria-labelledby="tab-train" data-tab="train" hidden></div>
+      <div class="tab-page" role="tabpanel" id="page-annotate" aria-labelledby="tab-annotate" data-tab="annotate" hidden></div>
     </aside>
   </main>
-  <div id="toasts"></div>
+  <div id="toasts" role="status" aria-live="polite"></div>
   <script type="module" src="/src/main.js"></script>
 </body>
 </html>

@@ -2,16 +2,18 @@
 import Drawflow from 'drawflow';
 import 'drawflow/dist/drawflow.min.css';
 import { t } from './i18n/index.js';
+import { icon } from './icons.js';
 
 // 每種節點：輸入埠可接受的型別、輸出型別、顏色
 export const NODE_TYPES = {
-  dataset: { inputs: [], output: 'dataset', color: '#4c97ff' },
-  pretrained: { inputs: [], output: 'model', color: '#9966ff' },
-  train: { inputs: [['dataset'], ['model']], output: 'model', color: '#ff8c1a' },
-  camera: { inputs: [], output: 'image', color: '#59c059' },
-  textin: { inputs: [], output: 'text', color: '#59c059' },
-  predict: { inputs: [['model'], ['image', 'text']], output: null, color: '#ff6680' },
-  llm: { inputs: [['text']], output: null, color: '#0fbd8c' },
+  // 顏色與白字對比皆 ≥ 4.5:1（WCAG AA）
+  dataset: { inputs: [], output: 'dataset', color: '#2563eb' },
+  pretrained: { inputs: [], output: 'model', color: '#7c3aed' },
+  train: { inputs: [['dataset'], ['model']], output: 'model', color: '#c2410c' },
+  camera: { inputs: [], output: 'image', color: '#15803d' },
+  textin: { inputs: [], output: 'text', color: '#0e7490' },
+  predict: { inputs: [['model'], ['image', 'text']], output: null, color: '#be123c' },
+  llm: { inputs: [['text']], output: null, color: '#0f766e' },
 };
 
 const INPUT_LABELS = {
@@ -29,19 +31,19 @@ const esc = (s) => String(s).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
 const opt = (value, label) => `<option value="${esc(value)}">${esc(label)}</option>`;
 
 function nodeHtml(type) {
-  const head = `<div class="node-title"><input class="title-input" df-title></div>`;
+  const head = `<div class="node-title"><input class="title-input" aria-label="${t('node.rename')}" df-title></div>`;
   const row = (label, field) => `<label class="node-row"><span>${label}</span>${field}</label>`;
   switch (type) {
     case 'dataset':
       return head + row(t('node.dataset.name'), '<input df-name>')
         + row(t('node.dataset.task'), `<select df-task>${['image_cls', 'detect', 'text_cls'].map((k) => opt(k, t(`task.${k}`))).join('')}</select>`)
-        + `<button data-action="annotate">${t('node.dataset.annotate')}</button>`;
+        + `<button data-action="annotate">${icon('tag')}<span>${t('node.dataset.annotate')}</span></button>`;
     case 'pretrained':
       return head + row(t('node.pretrained.key'), `<select df-key>${pretrainedList.map((p) => opt(p.key, p.label)).join('')}</select>`);
     case 'train':
       return head + row(t('node.train.epochs'), '<input type="number" min="1" max="300" df-epochs>')
-        + `<button data-action="train">${t('node.train.start')}</button>`
-        + `<div class="node-status"></div>`;
+        + `<button data-action="train">${icon('play')}<span>${t('node.train.start')}</span></button>`
+        + `<div class="node-status" role="status"></div>`;
     case 'camera':
       return head + `<div class="node-hint">${t('node.camera.hint')}</div>`;
     case 'textin':
@@ -52,8 +54,8 @@ function nodeHtml(type) {
     case 'llm':
       return head + row(t('node.llm.model'), `<select df-model>${llmList.map((m) => opt(m.key, m.label)).join('')}</select>`)
         + row(t('node.llm.system'), '<textarea rows="2" df-system></textarea>')
-        + `<button data-action="download">${t('node.llm.download')}</button>`
-        + `<div class="node-status"></div>`;
+        + `<button data-action="download">${icon('download')}<span>${t('node.llm.download')}</span></button>`
+        + `<div class="node-status" role="status"></div>`;
     default:
       return head;
   }
@@ -184,6 +186,9 @@ export function setStatus(id, text, state = '') {
     el.textContent = text;
     el.dataset.state = state;
   }
+  // 執行中時停用節點上的動作按鈕，避免重複送出
+  const btn = document.querySelector(`#node-${id} button[data-action]`);
+  if (btn) btn.disabled = state === 'running';
 }
 
 export function exportGraph() { return editor.export(); }

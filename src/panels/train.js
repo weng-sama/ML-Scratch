@@ -1,10 +1,12 @@
 // 訓練面板：即時繪製 loss 與準確度／mAP 曲線
 import { Chart, registerables } from 'chart.js';
 import { t } from '../i18n/index.js';
+import { iconButton } from '../icons.js';
 
 Chart.register(...registerables);
 
-const PALETTE = ['#4c97ff', '#ff8c1a', '#9966ff', '#59c059', '#ff6680', '#0fbd8c'];
+// 曲線另以虛線區分訓練／驗證，不只靠顏色
+const PALETTE = ['#2563eb', '#c2410c', '#7c3aed', '#15803d', '#be123c', '#0f766e'];
 
 function lineChart(canvas, title, yMax) {
   return new Chart(canvas, {
@@ -20,10 +22,10 @@ function lineChart(canvas, title, yMax) {
   });
 }
 
-export function createTrainPanel(root) {
+export function createTrainPanel(root, { onCancel }) {
   root.innerHTML = `
     <div class="train-empty">${t('train.empty')}</div>
-    <select class="job-select" hidden></select>
+    <div class="toolbar"><select class="job-select" aria-label="${t('tabs.train')}" hidden></select></div>
     <div class="train-explain"></div>
     <progress class="train-progress" max="1" value="0" hidden></progress>
     <div class="chart-box"><canvas class="loss-chart"></canvas></div>
@@ -31,6 +33,10 @@ export function createTrainPanel(root) {
     <h4>${t('train.log')}</h4>
     <pre class="train-log"></pre>`;
   const select = root.querySelector('.job-select');
+  const stopBtn = iconButton('stop', t('train.stopJob'), { className: 'danger' });
+  stopBtn.hidden = true;
+  stopBtn.addEventListener('click', () => { stopBtn.disabled = true; onCancel(select.value); });
+  select.after(stopBtn);
   const progress = root.querySelector('.train-progress');
   const logEl = root.querySelector('.train-log');
   const explain = root.querySelector('.train-explain');
@@ -45,6 +51,7 @@ export function createTrainPanel(root) {
     chart.data.labels = rows.map((r) => r.epoch);
     chart.data.datasets = keys.map((k, i) => ({
       label: k, data: rows.map((r) => pick(r)[k] ?? null), borderColor: PALETTE[i % PALETTE.length],
+      borderDash: k.startsWith('val') ? [6, 4] : [],
       backgroundColor: PALETTE[i % PALETTE.length], tension: 0.25, pointRadius: 2,
     }));
     chart.update();
@@ -54,6 +61,8 @@ export function createTrainPanel(root) {
     const job = jobs.get(select.value);
     if (!job) return;
     explain.textContent = t(`train.explain.${job.task}`);
+    stopBtn.hidden = job.status !== 'running';
+    stopBtn.disabled = false;
     const last = job.epochs.at(-1);
     progress.hidden = false;
     progress.value = last ? last.epoch / last.epochs : 0;

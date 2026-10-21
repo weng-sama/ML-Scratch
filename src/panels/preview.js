@@ -1,6 +1,7 @@
 // 預覽面板：攝影機畫面＋偵測框、AI 結果、訊息與對話紀錄、文字輸入
 import { attach } from '../camera.js';
 import { t } from '../i18n/index.js';
+import { icon } from '../icons.js';
 
 export function createPreview(root, { onText }) {
   root.innerHTML = `
@@ -9,11 +10,11 @@ export function createPreview(root, { onText }) {
       <video class="stage-video" hidden></video>
       <canvas class="stage-overlay"></canvas>
     </div>
-    <div class="results"></div>
-    <div class="log"></div>
+    <div class="results" role="status"></div>
+    <div class="log" role="log" aria-live="polite"></div>
     <form class="text-form">
-      <input name="text" autocomplete="off" placeholder="${t('preview.inputPlaceholder')}">
-      <button>${t('preview.send')}</button>
+      <input name="text" autocomplete="off" aria-label="${t('preview.inputPlaceholder')}" placeholder="${t('preview.inputPlaceholder')}">
+      <button class="primary">${icon('send')}<span>${t('preview.send')}</span></button>
     </form>`;
   const video = root.querySelector('.stage-video');
   const overlay = root.querySelector('.stage-overlay');
@@ -56,10 +57,10 @@ export function createPreview(root, { onText }) {
     for (const b of boxes) {
       const x = b.x1 * w;
       const y = b.y1 * h;
-      ctx.strokeStyle = '#ff6680';
+      ctx.strokeStyle = '#be123c';
       ctx.strokeRect(x, y, (b.x2 - b.x1) * w, (b.y2 - b.y1) * h);
       const label = `${b.label} ${Math.round(b.conf * 100)}%`;
-      ctx.fillStyle = '#ff6680';
+      ctx.fillStyle = '#be123c';
       ctx.fillRect(x, y - 20, ctx.measureText(label).width + 10, 20);
       ctx.fillStyle = '#fff';
       ctx.fillText(label, x + 5, y - 5);

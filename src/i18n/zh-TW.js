@@ -2,8 +2,8 @@
 export default {
   app: {
     title: 'ML-Scratch',
-    start: '▶ 開始',
-    stop: '■ 停止',
+    start: '開始',
+    stop: '停止',
     open: '開啟專案',
     save: '儲存專案',
     newProject: '新專案',
@@ -18,7 +18,7 @@ export default {
   },
   palette: {
     title: '節點',
-    hint: '拖曳到畫布，再從右側圓點拉線到左側圓點',
+    hint: '點一下或拖曳到畫布，再從右側圓點拉線到左側圓點',
   },
   tabs: { preview: '預覽', train: '訓練', annotate: '標註' },
   port: {
@@ -30,6 +30,7 @@ export default {
     out: '輸出',
   },
   node: {
+    rename: '節點名稱（可修改）',
     dataset: { title: '資料集', name: '名稱', task: '任務', annotate: '開啟標註' },
     pretrained: { title: '預訓練模型', key: '模型' },
     train: {
@@ -57,7 +58,7 @@ export default {
     noCamera: '無法開啟攝影機：{msg}',
   },
   preview: {
-    empty: '按 ▶ 開始 執行。攝影機畫面與 AI 結果會顯示在這裡。',
+    empty: '按「開始」執行。攝影機畫面與 AI 結果會顯示在這裡。',
     inputPlaceholder: '輸入文字後按 Enter（送給「文字輸入」節點）',
     send: '送出',
     result: '{node}：{label}（{conf}%）',
@@ -65,6 +66,7 @@ export default {
   },
   train: {
     empty: '在「訓練」節點按「開始訓練」後，曲線會即時顯示在這裡。',
+    stopJob: '停止訓練',
     loss: '損失（loss，越低越好）',
     metric: '準確度／mAP（越高越好）',
     log: '紀錄',
@@ -82,7 +84,9 @@ export default {
     addClass: '新增類別',
     classPrompt: '類別名稱：',
     capture: '拍照',
-    burst: '按住連拍',
+    burst: '按住連拍，放開停止',
+    capturing: '連拍中… {n} 張',
+    confirmDelete: '要刪除這筆資料嗎？',
     importFolder: '匯入資料夾',
     importCsv: '匯入 CSV（text, label 欄位）',
     count: '{n} 張',
@@ -99,7 +103,7 @@ export default {
   },
   blocks: {
     cat: { events: '事件', ai: 'AI 結果', actions: '動作', control: '控制', logic: '運算', text: '文字', vars: '變數' },
-    whenStart: '當 ▶ 開始被按下',
+    whenStart: '當 開始 被按下',
     whenResult: '當 %1 有新結果',
     whenText: '當 收到輸入的文字',
     whenLlm: '當 %1 回覆',

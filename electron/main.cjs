@@ -72,6 +72,8 @@ function createWindow() {
   const win = new BrowserWindow({
     width: 1440,
     height: 900,
+    minWidth: 1180,
+    minHeight: 720,
     title: 'ML-Scratch',
     backgroundColor: '#f4f5f9',
     webPreferences: {

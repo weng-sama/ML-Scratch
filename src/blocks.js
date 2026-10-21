@@ -6,7 +6,9 @@ import * as ZhHant from 'blockly/msg/zh-hant';
 import { t } from './i18n/index.js';
 import { nodesOfType } from './graph.js';
 
-const COLORS = { events: '#ffbf00', ai: '#ff6680', actions: '#9966ff' };
+// 積木白字對比皆 ≥ 4.5:1；內建分類也改用較深的顏色
+const COLORS = { events: '#b45309', ai: '#be123c', actions: '#7c3aed' };
+const BUILTIN = { logic: '#4338ca', loop: '#15803d', math: '#1d4ed8', text: '#0f766e', variable: '#a21caf' };
 const HATS = new Set(['ml_when_start', 'ml_when_result', 'ml_when_text', 'ml_when_llm']);
 let workspace;
 
@@ -132,6 +134,12 @@ export function initBlocks(container) {
     move: { scrollbars: true, drag: true, wheel: true },
     grid: { spacing: 24, length: 2, colour: '#e3e6ee', snap: true },
     renderer: 'zelos', // 最接近 Scratch 的外觀
+    theme: Blockly.Theme.defineTheme('ml-scratch', {
+      base: Blockly.Themes.Classic,
+      blockStyles: Object.fromEntries(Object.entries(BUILTIN).map(([k, c]) => [`${k}_blocks`, { colourPrimary: c }])),
+      categoryStyles: Object.fromEntries(Object.entries(BUILTIN).map(([k, c]) => [`${k}_category`, { colour: c }])),
+      componentStyles: { toolboxBackgroundColour: '#eef0f5', flyoutBackgroundColour: '#e3e6ee' },
+    }),
   });
   new ResizeObserver(() => Blockly.svgResize(workspace)).observe(container);
   return workspace;

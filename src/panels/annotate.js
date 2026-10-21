@@ -2,6 +2,7 @@
 import { api } from '../api.js';
 import { attach, ensureCamera, grabFrame } from '../camera.js';
 import { t } from '../i18n/index.js';
+import { iconButton } from '../icons.js';
 
 const h = (tag, props = {}, ...children) => {
   const el = Object.assign(document.createElement(tag), props);
@@ -9,7 +10,10 @@ const h = (tag, props = {}, ...children) => {
   return el;
 };
 
-const BOX_COLORS = ['#ff6680', '#4c97ff', '#ffbf00', '#59c059', '#9966ff', '#ff8c1a', '#0fbd8c', '#5cb1d6', '#cf63cf'];
+const BOX_COLORS = ['#be123c', '#2563eb', '#b45309', '#15803d', '#7c3aed', '#c2410c', '#0f766e', '#0369a1', '#a21caf'];
+
+// 刪除需要確認，避免誤觸
+const confirmDelete = () => confirm(t('annotate.confirmDelete'));
 
 export function createAnnotator(root, { notify }) {
   let ds = null; // { name, task, classes, items }
@@ -64,17 +68,28 @@ export function createAnnotator(root, { notify }) {
 
   // 按住按鈕連拍，放開停止
   function burstButton(label, onShot) {
-    const btn = h('button', { textContent: `📷 ${label}`, title: t('annotate.burst') });
+    const btn = iconButton('camera', label, { label: t('annotate.burst'), className: 'primary' });
+    const text = btn.querySelector('span');
     let timer = null;
+    let n = 0;
     const stop = async () => {
       if (!timer) return;
       clearInterval(timer);
       timer = null;
+      btn.classList.remove('capturing');
+      text.textContent = label;
       await reload();
       render();
     };
     btn.addEventListener('pointerdown', () => {
-      const shot = () => { const f = grabFrame(); if (f) onShot(f).catch((err) => notify(err.message)); };
+      n = 0;
+      btn.classList.add('capturing');
+      const shot = () => {
+        const f = grabFrame();
+        if (!f) return;
+        text.textContent = t('annotate.capturing', { n: ++n });
+        onShot(f).catch((err) => notify(err.message));
+      };
       shot();
       timer = setInterval(shot, 250);
     });
@@ -92,30 +107,34 @@ export function createAnnotator(root, { notify }) {
   async function renderImageCls() {
     const rows = ds.classes.map((cls) => {
       const items = ds.items.filter((i) => i.label === cls);
-      const thumbs = h('div', { className: 'thumbs' }, ...items.slice(-12).reverse().map((it) =>
-        h('img', { src: api.imageUrl(ds.name, it.id), title: t('annotate.deleteItem'), onclick: async () => {
+      const thumbs = h('div', { className: 'thumbs' }, ...items.slice(-12).reverse().map((it) => {
+        const del = iconButton('x', '', { label: t('annotate.deleteItem'), className: 'thumb-del' });
+        del.onclick = async () => {
+          if (!confirmDelete()) return;
           await api.deleteItem(ds.name, it.id);
           await reload();
           render();
-        } })));
+        };
+        return h('div', { className: 'thumb' }, h('img', { src: api.imageUrl(ds.name, it.id), alt: cls, loading: 'lazy' }), del);
+      }));
       return h('div', { className: 'class-row' },
         h('div', { className: 'class-row-head' },
           h('b', { textContent: cls }), h('span', { textContent: t('annotate.count', { n: items.length }) }),
           burstButton(t('annotate.capture'), (f) => api.addImage(ds.name, f, cls)),
-          window.mlscratch ? h('button', { textContent: t('annotate.importFolder'), onclick: () => importFolder(cls) }) : null),
+          window.mlscratch ? Object.assign(iconButton('folderOpen', '', { label: t('annotate.importFolder') }), { onclick: () => importFolder(cls) }) : null),
         thumbs);
     });
     root.replaceChildren(header(), await cameraBox(),
       h('div', { className: 'toolbar' },
-        h('button', { textContent: `＋ ${t('annotate.addClass')}`, onclick: addClass }),
-        window.mlscratch ? h('button', { textContent: t('annotate.importFolder'), onclick: () => importFolder() }) : null),
+        Object.assign(iconButton('plus', t('annotate.addClass')), { onclick: addClass }),
+        window.mlscratch ? Object.assign(iconButton('folderOpen', t('annotate.importFolder')), { onclick: () => importFolder() }) : null),
       ...rows);
   }
 
   // ---------- 文字分類 ----------
   function renderTextCls() {
-    const input = h('textarea', { rows: 2, placeholder: t('annotate.textPlaceholder') });
-    const select = h('select', {}, ...ds.classes.map((c) => h('option', { value: c, textContent: c })));
+    const input = h('textarea', { rows: 2, placeholder: t('annotate.textPlaceholder'), ariaLabel: t('annotate.textPlaceholder') });
+    const select = h('select', { ariaLabel: t('annotate.classes') }, ...ds.classes.map((c) => h('option', { value: c, textContent: c })));
     const add = async () => {
       if (!ds.classes.length) return notify(t('annotate.needClass'));
       if (!input.value.trim()) return;
@@ -134,7 +153,8 @@ export function createAnnotator(root, { notify }) {
       list.replaceChildren(h('div', { className: 'muted', textContent: counts }),
         ...ds.items.slice(-100).reverse().map((s) => h('div', { className: 'sample' },
           h('span', { className: 'tag', textContent: s.label }), h('span', { textContent: s.text }),
-          h('button', { className: 'link', textContent: '✕', onclick: async () => {
+          Object.assign(iconButton('x', '', { label: t('annotate.deleteItem'), className: 'link' }), { onclick: async () => {
+            if (!confirmDelete()) return;
             await api.deleteItem(ds.name, s.id);
             await reload();
             renderList();
@@ -152,9 +172,10 @@ export function createAnnotator(root, { notify }) {
     };
     root.replaceChildren(header(),
       h('div', { className: 'toolbar' },
-        h('button', { textContent: `＋ ${t('annotate.addClass')}`, onclick: addClass }),
-        window.mlscratch ? h('button', { textContent: t('annotate.importCsv'), onclick: importCsv }) : null),
-      input, h('div', { className: 'toolbar' }, select, h('button', { textContent: t('annotate.addText'), onclick: add })),
+        Object.assign(iconButton('plus', t('annotate.addClass')), { onclick: addClass }),
+        window.mlscratch ? Object.assign(iconButton('fileText', t('annotate.importCsv')), { onclick: importCsv }) : null),
+      input, h('div', { className: 'toolbar' }, select,
+        Object.assign(iconButton('plus', t('annotate.addText'), { className: 'primary' }), { onclick: add })),
       list);
     renderList();
   }
@@ -166,15 +187,15 @@ export function createAnnotator(root, { notify }) {
     const canvas = h('canvas', { className: 'bbox-canvas' });
     const img = new Image();
     const chips = h('div', { className: 'chips' }, ...ds.classes.map((c, i) => h('button', {
-      className: `chip${i === detect.cls ? ' active' : ''}`, textContent: `${i + 1} ${c}`,
+      className: `chip${i === detect.cls ? ' active' : ''}`, textContent: `${i + 1} ${c}`, ariaPressed: String(i === detect.cls),
       style: `--chip:${BOX_COLORS[i % BOX_COLORS.length]}`,
       onclick: () => { detect.cls = i; render(); },
     })));
-    const strip = h('div', { className: 'thumbs strip' }, ...ds.items.map((it, i) => h('img', {
-      src: api.imageUrl(ds.name, it.id), className: `${it.labeled ? 'labeled' : ''}${i === detect.index ? ' current' : ''}`,
-      title: t(it.labeled ? 'annotate.labeled' : 'annotate.unlabeled'),
+    const strip = h('div', { className: 'thumbs strip' }, ...ds.items.map((it, i) => h('button', {
+      type: 'button', className: `strip-item${it.labeled ? ' labeled' : ''}${i === detect.index ? ' current' : ''}`,
+      title: t(it.labeled ? 'annotate.labeled' : 'annotate.unlabeled'), ariaLabel: `${i + 1}／${ds.items.length}（${t(it.labeled ? 'annotate.labeled' : 'annotate.unlabeled')}）`,
       onclick: () => goto(i),
-    })));
+    }, h('img', { src: api.imageUrl(ds.name, it.id), alt: '', loading: 'lazy' }))));
     const item = ds.items[detect.index];
 
     const draw = () => {
@@ -262,8 +283,8 @@ export function createAnnotator(root, { notify }) {
     root.replaceChildren(header(), await cameraBox(),
       h('div', { className: 'toolbar' },
         burstButton(t('annotate.capture'), (f) => api.addImage(ds.name, f).then(() => { detect.index = Infinity; })),
-        window.mlscratch ? h('button', { textContent: t('annotate.importFolder'), onclick: () => importFolder() }) : null,
-        h('button', { textContent: `＋ ${t('annotate.addClass')}`, onclick: addClass })),
+        window.mlscratch ? Object.assign(iconButton('folderOpen', t('annotate.importFolder')), { onclick: () => importFolder() }) : null,
+        Object.assign(iconButton('plus', t('annotate.addClass')), { onclick: addClass })),
       chips,
       h('div', { className: 'muted', textContent: t('annotate.detectHelp') }),
       item ? canvas : h('div', { className: 'muted', textContent: t('annotate.noImages') }),
